@@ -9,8 +9,25 @@ from flask_login import login_user, current_user, logout_user, login_required
 from flask_mail import Message
 
 
+@app.route("/setup")
+def setup():
+
+    try:
+        db.create_all()
+        hashed_password = bcrypt.generate_password_hash("admin").decode('utf-8')
+
+        user = User(username="admin", email="admin@admin.com", password=hashed_password)
+        db.session.add(user)
+        db.session.commit()
+
+        return "Setup Done Successfully"
+    except Exception as e:
+        print(e)
+        return "Setup Not Done"
+
 @app.route("/")
 @app.route("/home")
+@app.route("/index")
 def home():
     '''
 
@@ -42,7 +59,7 @@ def newuser():
         flash(f'Your account has been created!, You can now login in', 'success')
         return redirect(url_for('dashboard'))
 
-    return render_template('portal/register.html', title='Register', form=form)
+    return render_template('dashboard/register.html', title='Register', form=form)
 
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -59,7 +76,7 @@ def login():
 
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
-    return render_template('portal/login.html', title='Login', form=form)
+    return render_template('dashboard/login.html', title='Login', form=form)
 
 
 @app.route("/logout")
@@ -85,8 +102,8 @@ def save_picture(form_picture):
 @login_required
 def dashboard():
     if current_user.urole == "ADMIN":
-        return render_template('portal/admin_dashboard.html')
-    return render_template('portal/user_dashboard.html')
+        return render_template('dashboard/admin_dashboard.html')
+    return render_template('dashboard/user_dashboard.html')
 
 
 @app.route("/account", methods=['GET', 'POST'])
@@ -107,7 +124,7 @@ def account():
         form.username.data = current_user.username
         form.email.data = current_user.email
     image_file = url_for('static', filename='profile_pic/' + current_user.image_file)
-    return render_template('portal/account.html', title='Account', image_file=image_file,
+    return render_template('dashboard/account.html', title='Account', image_file=image_file,
         form=form)
 
 

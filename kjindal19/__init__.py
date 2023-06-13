@@ -9,9 +9,9 @@ from flask_mail import Mail
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = ""
+app.config['SECRET_KEY'] = "drctfv3w4ed5rf6tg7yh8ujgbhj"
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://"user":"pass"@"host"/"database"'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://flask:Flask1234@localhost/kjindal19'
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 login_manager =  LoginManager(app)
